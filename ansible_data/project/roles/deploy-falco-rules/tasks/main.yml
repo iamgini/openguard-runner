@@ -1,0 +1,10 @@
+---
+# tasks file for deploy-falco-rules
+- name: Copy custom falco rules
+  ansible.builtin.copy:
+    src: etc_falco_falco_rules.local.yaml
+    dest: /etc/falco/falco_rules.local.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart falco service

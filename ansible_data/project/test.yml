@@ -1,0 +1,7 @@
+---
+- hosts: "{{ NODES }}"
+  tasks:
+    - debug: 
+        msg: "{{ ansible_distribution }}"
+    - debug:
+        msg: "{{ ansible_hostname }}"

@@ -1,0 +1,11 @@
+---
+- hosts: "{{ NODES }}"
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Change /tmp permission
+      ansible.builtin.file:
+        path: /tmp
+        owner: root
+        group: root
+        mode: '1777'

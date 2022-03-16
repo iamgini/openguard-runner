@@ -1,0 +1,7 @@
+---
+# handlers file for deploy-falco-rules
+
+- name: Restart falco service
+  ansible.builtin.service:
+    name: falco
+    state: restarted

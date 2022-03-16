@@ -1,0 +1,6 @@
+[nodes]
+fedora-35-cp ansible_host=192.168.56.39 ansible_user=devops ansible_password=devops 
+Ubuntu-20-CP ansible_host=192.168.56.35 ansible_user=devops ansible_password=devops 
+
+[nodes:vars]
+ansible_ssh_common_args=' -o StrictHostKeyChecking=no '
