@@ -1,2 +1,4 @@
 ## ansible runner
 ansible_runner
+requests
+ansible-core
