@@ -22,7 +22,7 @@ def fetch_job():
     output = json.loads(data)
     #print(output)
     pending_incidents =  output['pending_incidents']
-    
+    print(pending_incidents)
     if pending_incidents == "YES":
       this_hostname = output['managed_node']
       node_connection_name = output['node_connection_name']
@@ -70,6 +70,7 @@ def fetch_job():
       timestampStr = str(dateTimeObj.strftime("%Y-%b-%d-%H:%M:%S"))
       new_log = open( 'application_logs/logs', "a")
       new_log.write( timestampStr + ": No incidents found" + '\n')
+      print(timestampStr + ": No incidents found")
       new_log.close()
 
   except Exception as fetch_data_exeception:

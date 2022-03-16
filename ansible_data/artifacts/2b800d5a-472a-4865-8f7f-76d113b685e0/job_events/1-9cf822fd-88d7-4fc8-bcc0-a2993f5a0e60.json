@@ -1,1 +1,0 @@
-{"event": "verbose", "uuid": "9cf822fd-88d7-4fc8-bcc0-a2993f5a0e60", "counter": 1, "stdout": "\u001b[0;31mERROR! the playbook: NA could not be found\u001b[0m", "start_line": 0, "end_line": 1, "runner_ident": "2b800d5a-472a-4865-8f7f-76d113b685e0", "created": "2022-03-16T11:01:02.833013"}
