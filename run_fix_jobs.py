@@ -2,24 +2,57 @@
 
 import time
 import urllib.request
+import urllib.parse
 from urllib.request import urlopen
 import json
 import requests
 from datetime import datetime
 import ansible_runner
-
+import base64
 
 openguard_job_api_url = 'http://192.168.56.1:8000/api/incident_fix/'
+user_agent = 'OpenGuard Runner'
 check_for_jobs = True
 ## interval in seconds
 check_interval = 5
-#base_dir = '/vagrant'
-base_dir = '.'
+base_dir = '/vagrant'
+#base_dir = '.'
 
 ## Fetch the job from openguard
 def fetch_job():
   try:
     #source = requests.get(openguard_job_api_url).json()
+    #request = urllib.request.Request(openguard_job_api_url)
+    auth_token = 'a7fdcd30f90350dafa260ed1bf1fa207aeb37ee4'
+    headers = {
+        "Authorization": f"Token {auth_token}"
+        }
+    #base64string = base64.b64encode('%s' % (auth_token))
+    #request.add_header("Authorization", "Basic %s" % base64string)  
+    #request.add_header("Authorization", "Token %s" % base64string)
+    
+    request = urllib.request.Request(openguard_job_api_url, headers=headers)
+    #result = urllib.request.urlopen(request)
+
+
+    ## check details for urlopen results here:
+    ## https://docs.python.org/3/library/urllib.request.html 
+    try:
+      with urlopen(request, timeout=10) as response:
+          print(response.read())
+          return response.read(), response
+    except HTTPError as error:
+        print(error.status, error.reason)
+    except URLError as error:
+        print(error.reason)
+    except TimeoutError:
+        print("Request timed out")
+    #output = json.loads(result)
+    #body = result.read()
+    #print(type(result.read()))
+    #print(result)
+
+    #headers = {'Authorization': 'Token a7fdcd30f90350dafa260ed1bf1fa207aeb37ee4'}
     data = urllib.request.urlopen(openguard_job_api_url).read()
     output = json.loads(data)
     #print(output)
