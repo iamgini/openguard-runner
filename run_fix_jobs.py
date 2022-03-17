@@ -13,7 +13,8 @@ openguard_job_api_url = 'http://192.168.56.1:8000/api/incident_fix/'
 check_for_jobs = True
 ## interval in seconds
 check_interval = 5
-base_dir = '/vagrant'
+#base_dir = '/vagrant'
+base_dir = '.'
 
 ## Fetch the job from openguard
 def fetch_job():
@@ -24,7 +25,7 @@ def fetch_job():
     #print(output)
     app_logger("Fetching jobs")
     pending_incidents =  output['pending_incidents']
-    print(pending_incidents)
+    #print(pending_incidents)
     if pending_incidents == "YES":
       
       this_hostname = output['managed_node']
