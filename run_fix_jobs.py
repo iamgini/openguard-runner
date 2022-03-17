@@ -13,6 +13,7 @@ openguard_job_api_url = 'http://192.168.56.1:8000/api/incident_fix/'
 check_for_jobs = True
 ## interval in seconds
 check_interval = 5
+base_dir = '/vagrant'
 
 ## Fetch the job from openguard
 def fetch_job():
@@ -21,16 +22,21 @@ def fetch_job():
     data = urllib.request.urlopen(openguard_job_api_url).read()
     output = json.loads(data)
     #print(output)
+    app_logger("Fetching jobs")
     pending_incidents =  output['pending_incidents']
     print(pending_incidents)
     if pending_incidents == "YES":
+      
       this_hostname = output['managed_node']
       node_connection_name = output['node_connection_name']
       rule_fix_playbook = output['rule_fix_playbook']
       this_incident_id = output['incident_id']
+      app_logger("Found jobs for " + str(this_hostname))
       if rule_fix_playbook != "NA":
         ## Call Ansible Runner
+        app_logger("Running jobs for " + str(this_hostname))
         ansible_output = run_ansible(this_hostname, node_connection_name,rule_fix_playbook)
+        #app_logger("Ansible output " + str(ansible_output))
         #print(ansible_output)
         if ansible_output == 0:
           try:
@@ -53,25 +59,28 @@ def fetch_job():
             #print(job_completed_data)
             #print(post_job_update.json())
             print(f"Status Code: {post_job_update.status_code}, Response: {post_job_update. json ()}")
+            app_logger(str(this_hostname)  + " - executed " + str(rule_fix_playbook))
 
             #incident.save()
           except Exception as incident_entry_update_exception:
             print(incident_entry_update_exception)
 
-          dateTimeObj = datetime.now()
-          timestampStr = str(dateTimeObj.strftime("%Y-%b-%d-%H:%M:%S"))
-
-          new_log = open( 'application_logs/logs', "a")
-          new_log.write( timestampStr + ": " + str(this_hostname)  + " - executed " + str   (rule_fix_playbook) + '\n')
-          #new_log.write('\n'  + json.dumps( incident.    #incident_time_reported ))
-          new_log.close()
+          
+          #dateTimeObj = datetime.now()
+          #timestampStr = str(dateTimeObj.strftime("%Y-%b-%d-%H:%M:%S"))
+#
+          #new_log = open( base_dir + '/application_logs/logs', "a")
+          #new_log.write( timestampStr + ": " + str(this_hostname)  + " - executed " + str   #(rule_fix_playbook) + '\n')
+          ##new_log.write('\n'  + json.dumps( incident.    #incident_time_reported ))
+          #new_log.close()
     else:
-      dateTimeObj = datetime.now()
-      timestampStr = str(dateTimeObj.strftime("%Y-%b-%d-%H:%M:%S"))
-      new_log = open( 'application_logs/logs', "a")
-      new_log.write( timestampStr + ": No incidents found" + '\n')
-      print(timestampStr + ": No incidents found")
-      new_log.close()
+      app_logger("No incidents found")
+      #dateTimeObj = datetime.now()
+      #timestampStr = str(dateTimeObj.strftime("%Y-%b-%d-%H:%M:%S"))
+      #new_log = open( base_dir + '/application_logs/logs', "a")
+      #new_log.write( timestampStr + ": No incidents found" + '\n')
+      #print(timestampStr + ": No incidents found")
+      #new_log.close()
 
   except Exception as fetch_data_exeception:
     print("Unable to fetch data.")
@@ -82,7 +91,8 @@ def fetch_job():
 def run_ansible(node_names, ansible_host_name, playbook_file):
 
     ## varialble
-    inventory_file = 'ansible_data/inventory/this_inventory'
+    app_logger(str(node_names)  + " - executing " + str(playbook_file))
+    inventory_file = base_dir + '/ansible_data/inventory/this_inventory'
     ## create inventory
     #hosts = {
     #    'hosts': {
@@ -113,7 +123,7 @@ def run_ansible(node_names, ansible_host_name, playbook_file):
         #'inventory': inventory_file,
         #'envvars': envvars,
         'extravars': extravars,
-        'private_data_dir': 'ansible_data'
+        'private_data_dir': base_dir + '/ansible_data'
     }
 
     #ansiblerunner = ansible_runner.run(private_data_dir='ansible_data', 
@@ -129,7 +139,15 @@ def run_ansible(node_names, ansible_host_name, playbook_file):
     #print("Final status:")
     #print(ansiblerunner.stats)
     return ansiblerunner.rc
-      
+
+def app_logger(log_message):
+    dateTimeObj = datetime.now()
+    timestampStr = str(dateTimeObj.strftime("%Y-%b-%d-%H:%M:%S"))
+    new_log = open( base_dir + '/application_logs/logs', "a")
+    log_line = timestampStr + ": " + log_message
+    new_log.write(log_line + '\n' )
+    print(log_line)
+    new_log.close()    
 #fetch_job()
 
 #while True:
@@ -140,7 +158,17 @@ try:
     while True:
         fetch_job()
         time.sleep(check_interval)
-        
+        try:
+            f = open(base_dir + "/og.lock")
+            # Do something with the file
+            break
+        except FileNotFoundError:
+            pass
+        finally:
+            try:
+                f.close()
+            except:
+                pass
 except KeyboardInterrupt:
     print("Press Ctrl-C to terminate the script")
     pass

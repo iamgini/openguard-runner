@@ -1,0 +1,51 @@
+---
+# cofigure kubernetes nodes with users and access
+
+- hosts: all
+  become: true
+
+  vars:
+    local_user_name: ansible
+    local_user_password: ansible
+    key_pair_path: /tmp/id_ssh_rsa
+    remote_user_name: devops
+    remote_user_password: devops
+
+  tasks:
+    #- name: Create {{ local_user_name }} user 
+    #  user:
+    #    name: "{{ local_user_name }}"
+    #    password: "{{ local_user_password }}"
+#
+    #- name: Add sudo entries for {{ local_user_name }}
+    #  copy:
+    #    content: "{{ local_user_name }} ALL=(ALL) NOPASSWD: ALL"
+    #    dest: "/etc/sudoers.d/{{ local_user_name }}"
+    #
+    #- name: Add .ssh directories
+    #  file:
+    #    path: /home/{{ local_user_name }}/.ssh
+    #    state: directory
+    #    mode: 0700
+    #    owner: "{{ local_user_name }}"
+    #    group: "{{ local_user_name }}"
+#
+    - name: Update system
+      apt:
+        name: "*"
+        state: present
+        update_cache: yes 
+
+    - name: Install python-pip
+      package:
+        name:
+          - python3-pip
+          - sshpass
+        state: present
+
+    - name: Install ansible using pip
+      pip:
+        name: ansible-core
+        #extra_args: --user
+      #become: true
+      #become_user: "{{ local_user_name }}"
