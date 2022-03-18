@@ -2,3 +2,4 @@
 ansible_runner
 requests
 ansible-core
+pyyaml

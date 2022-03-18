@@ -1,0 +1,21 @@
+## check https://djangowaves.com/tips-tricks/gitignore-for-a-django-project/
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+
+# Backup files # 
+*.bak 
+
+## log files from app
+application_logs
+
+## ansible
+ansible_data/artifacts/
+
+
+## .env
+.env*
