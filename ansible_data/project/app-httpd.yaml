@@ -1,11 +1,15 @@
 ---
-- name: Ensure chrony is installed and configured
+- name: Install httpd
   hosts: "{{ NODES }}"
   #gather_facts: false
   become: true
   tasks:
-    - name: make sure chronyd is installed
+    - name: make sure httpd is installed
       yum:
-      name: chrony
-      state: latest
-      update_cache: yes
+        name: httpd
+        state: latest
+        
+    - name: start httpd
+      service:
+        name: httpd
+        state: started

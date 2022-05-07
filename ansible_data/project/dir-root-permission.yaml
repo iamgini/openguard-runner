@@ -1,0 +1,12 @@
+---
+- name: Ensure /root with right permissions
+  hosts: "{{ NODES }}"
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Update /root permission
+      ansible.builtin.file:
+        path: /root
+        owner: root
+        group: root
+        mode: '660'

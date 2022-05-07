@@ -6,6 +6,6 @@
   tasks:
     - name: make sure chronyd is installed
       yum:
-      name: chrony
-      state: latest
-      update_cache: yes
+        name: chrony
+        state: latest
+        update_cache: yes
