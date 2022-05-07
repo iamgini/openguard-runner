@@ -1,0 +1,11 @@
+---
+- name: Ensure chrony is installed and configured
+  hosts: "{{ NODES }}"
+  #gather_facts: false
+  become: true
+  tasks:
+    - name: make sure chronyd is installed
+      yum:
+      name: chrony
+      state: latest
+      update_cache: yes
