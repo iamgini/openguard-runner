@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenGuard Runner
+After=multi-user.target
+[Service]
+Type=simple
+Restart=always
+ExecStart=/usr/bin/python3 /opt/openguard-runner/openguard-runner-start.py
+ExecStop=/usr/bin/python3 /opt/openguard-runner/openguard-runner-stop.py
+[Install]
+WantedBy=multi-user.target
