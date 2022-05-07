@@ -1,0 +1,14 @@
+---
+- hosts: "{{ NODES }}"
+  gather_facts: false
+  become: true
+  bss_motd_file: "Welcome to Production Server.\n(This is managed by Ansible)"
+  tasks:
+    - name: Update /etc/motd file
+      ansible.builtin.copy:
+        #src: "{{ bss_motd_file }}"
+        content: "{{ bss_motd_file }}"
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: 0644

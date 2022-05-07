@@ -1,1 +1,0 @@
-{"all": {"hosts": {"Ubuntu-20-CP": {"ansible_host": "192.168.56.35", "ansible_user": "devops", "ansible_ssh_common_args": "-o StrictHostKeyChecking=no"}}}}

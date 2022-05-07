@@ -1,0 +1,9 @@
+### OpenGuard Runner Configuration
+access:
+  token1: 'a7fdcd30f90350dafa260ed1bf1fa207aeb37ee4'
+  token: '25254b0d1f9685749d228368f0663b5f540d889a'
+  openguard_job_api_url: 'http://192.168.56.1:8000/api/incident_fix/'
+environment:
+  agent_name: 'OpenGuard Runner'
+  base_directory: '/vagrant'
+  check_interval_in_seconds: 15

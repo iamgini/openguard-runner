@@ -15,6 +15,11 @@ import yaml
 import sys
 import os
 
+## logging config start
+# import logging
+# logging.basicConfig(level=logging.DEBUG)
+## logging config end
+
 try:
   with open("/etc/openguard-runner/openguard-runner.yaml", 'r') as config:
     try: 
@@ -55,6 +60,7 @@ def fetch_job():
   ## check details for urlopen results here:
   ## https://docs.python.org/3/library/urllib.request.html 
   try:
+
     with urlopen(request, timeout=10) as response:
       #app_logger("Fetching jobs")
       output = json.loads(response.read().decode('utf-8'))
@@ -81,7 +87,7 @@ def fetch_job():
           app_logger("Running job(Incident: " + str(this_incident_id) + ") for " + str(this_hostname))
           ansible_output = run_ansible(this_hostname, node_connection_name, node_connection_username, node_connection_password, node_connection_key, node_connection_type, rule_fix_playbook)
           #app_logger("Ansible output " + str(ansible_output))
-          #print(ansible_output)
+          print(ansible_output)
           if ansible_output == 0:
             app_logger(str(this_hostname)  + " - executed " + str(rule_fix_playbook))
             try:
@@ -125,7 +131,10 @@ def fetch_job():
 def run_ansible(node_names, ansible_host_name, node_connection_username, node_connection_password, node_connection_key, node_connection_type, playbook_file):
 
     ## varialble
+
     app_logger(str(node_names)  + " - executing " + str(playbook_file))
+
+
     inventory_file = base_dir + '/ansible_data/inventory/this_inventory'
     #print(node_connection_type)
     ## create inventory
@@ -138,7 +147,9 @@ def run_ansible(node_names, ansible_host_name, node_connection_username, node_co
     #        }
     #    },
     #}
+
     if node_connection_type == 'Username-Password':
+        print("Username-Password")
         hosts = {
             'hosts': {
                 node_names: {
@@ -150,6 +161,7 @@ def run_ansible(node_names, ansible_host_name, node_connection_username, node_co
             },
         }
     else:
+        print("SSH Keys")
         ssh_file = open( base_dir + "/ansible_data/env/ssh_key", "w")
         ssh_file.write(node_connection_key)
         ssh_file.close() 
@@ -164,11 +176,13 @@ def run_ansible(node_names, ansible_host_name, node_connection_username, node_co
         }
     print(hosts)
 
+
     ## create file manually due to persmission issue
     this_inventory = node_names + " ansible_host=" + ansible_host_name + " ansible_user=devops ansible_password=devops "
     new_inventory = open(inventory_file, "w")
     new_inventory.write(this_inventory)
     new_inventory.close()
+
 
     ## fetch and assign extra variables
     extravars = {
@@ -178,18 +192,20 @@ def run_ansible(node_names, ansible_host_name, node_connection_username, node_co
     ## build kwargs for passing to runner
     kwargs = {
         'playbook': playbook_file,
-        'inventory': {'all': hosts},
+        #'inventory': {'all': hosts},
         #'inventory': inventory_file,
         #'envvars': envvars,
         'extravars': extravars,
         'private_data_dir': base_dir + '/ansible_data'
     }
 
-    #ansiblerunner = ansible_runner.run(private_data_dir='ansible_data', 
-    #                       playbook='test.yml')
+
+    print("exec mode")
+    #ansiblerunner = ansible_runner.run(private_data_dir='ansible_data', playbook='test.yml')
 
     ## run ansible_runner with **kwargs
     ansiblerunner = ansible_runner.run(**kwargs)
+    print("hhh")
 
     #print("{}: {}".format(ansiblerunner.status, ansiblerunner.rc))
     # successful: 0
@@ -203,8 +219,8 @@ def run_ansible(node_names, ansible_host_name, node_connection_username, node_co
         os.remove( base_dir + "/ansible_data/inventory/hosts.json" )
         #print("Stop file deleted")
     except Exception as exc:
-        #print("Unable to delete host file" + str(exc))
-        sys.exit(5)
+        print("Unable to delete host file" + str(exc))
+        #sys.exit(exc)
 
     #remove ssh key
     try:
@@ -212,8 +228,8 @@ def run_ansible(node_names, ansible_host_name, node_connection_username, node_co
         ssh_file.write('')
         ssh_file.close()
     except Exception as exc:
-        #print("Unable to delete key file" + str(exc))
-        sys.exit(5)
+        print("Unable to delete key file" + str(exc))
+        #sys.exit(exc)
     
     #try:
     #    os.remove( base_dir + "/ansible_data/env/ssh_key" )
@@ -235,7 +251,8 @@ def app_logger(log_message):
     print(log_line)
     new_log.close()    
 
-fetch_job()
+## debug mode testng, comment below line
+#fetch_job()
 
 #while True:
 #  time.sleep(check_interval)
@@ -243,7 +260,7 @@ fetch_job()
 
 try:
     app_logger("Starting OpenGuard Runner...")
-    while False:
+    while True:
         fetch_job()
         time.sleep(check_interval)
         try:
