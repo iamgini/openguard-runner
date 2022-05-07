@@ -1,12 +1,12 @@
 ---
-- name: Ensure /etc/passwd with right permissions
+- name: Ensure /etc/group with right permissions
   hosts: "{{ NODES }}"
   gather_facts: false
   become: true
   tasks:
-    - name: Ensure /etc/passwd permissions
+    - name: Ensure /etc/group permissions
       ansible.builtin.file:
-        path: /etc/passwd
+        path: /etc/group
         owner: root
         group: root
         mode: '644'

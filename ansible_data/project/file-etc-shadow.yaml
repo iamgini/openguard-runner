@@ -1,12 +1,12 @@
 ---
-- name: Ensure /etc/passwd with right permissions
+- name: Ensure /etc/shadow with right permissions
   hosts: "{{ NODES }}"
   gather_facts: false
   become: true
   tasks:
-    - name: Ensure /etc/passwd permissions
+    - name: Ensure /etc/shadow permissions
       ansible.builtin.file:
-        path: /etc/passwd
+        path: /etc/shadow
         owner: root
         group: root
-        mode: '644'
+        mode: '000'
