@@ -3,7 +3,7 @@
   gather_facts: false
   become: true
   vars:
-    bss_motd_file: "Welcome to Production Server.\n(This is managed by Ansible)"
+    bss_motd_file: "Welcome to Production Server.\n(This is managed by Ansible)\n"
   tasks:
     - name: Update /etc/motd file
       ansible.builtin.copy:
